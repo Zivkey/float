@@ -44,7 +44,10 @@ const PersonalIcon = () => (
 
 export default function Home() {
   return (
-    <main className="relative w-full min-h-screen overflow-hidden bg-[#0d0d0d] text-white">
+    <main
+      className="relative w-full min-h-screen overflow-hidden bg-[#0d0d0d] bg-cover bg-center bg-no-repeat text-white"
+      style={{ backgroundImage: "url('/figma/Background_Image.png')" }}
+    >
       <div className="relative mx-auto w-full max-w-[1440px]">
         <Navbar />
         <Hero />

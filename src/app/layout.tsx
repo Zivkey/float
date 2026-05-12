@@ -36,7 +36,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${averiaSerif.variable} ${caveat.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#0b0b0d] text-white">
+      <body className="min-h-full flex flex-col bg-[#0d0d0d] text-white">
         {children}
       </body>
     </html>
