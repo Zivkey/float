@@ -3,12 +3,12 @@
 import { useRef, useEffect, ReactNode } from "react";
 import { gsap } from "gsap";
 import { Draggable } from "gsap/Draggable";
-import { ensureReady, loadPatch, type Patch } from "@web-kits/audio";
+import { ensureReady, loadPatch, type AudioPatch } from "@web-kits/audio";
 import "./StickerPeel.css";
 
 gsap.registerPlugin(Draggable);
 
-let patchPromise: Promise<Patch> | null = null;
+let patchPromise: Promise<AudioPatch> | null = null;
 function getPatch() {
   if (!patchPromise) patchPromise = loadPatch("/patches/mechanical.json");
   return patchPromise;
