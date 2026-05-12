@@ -1,0 +1,25 @@
+.sticker-peel {
+  position: absolute;
+  cursor: grab;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.45));
+}
+
+.sticker-peel:active {
+  cursor: grabbing;
+}
+
+.sticker-peel * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .sticker-peel {
+    cursor: default;
+    touch-action: none;
+  }
+}
