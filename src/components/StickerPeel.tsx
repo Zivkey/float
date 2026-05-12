@@ -52,9 +52,7 @@ export default function StickerPeel({
       zIndexBoost: false,
       onPress() {
         bringToFront(target);
-        ensureReady().then(() =>
-          getPatch().then((p) => p.play("page-exit", { volume: 3 }))
-        );
+        ensureReady();
       },
       onDrag(this: Draggable) {
         const rot = gsap.utils.clamp(-14, 14, this.deltaX * 0.5);
