@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import {
   ChevronDown,
@@ -53,7 +56,7 @@ export default function Home() {
 
 function Navbar() {
   return (
-    <nav className="relative mx-auto mt-8 flex h-20 w-[calc(100%-256px)] items-center justify-between rounded-xl border border-white/10 px-6">
+    <nav className="relative mx-auto mt-7 flex h-[72px] w-[calc(100%-256px)] items-center justify-between rounded-xl border border-white/10 px-6">
       <Image
         src="/figma/logo.svg"
         alt="float."
@@ -83,7 +86,7 @@ function Navbar() {
 
 function Hero() {
   return (
-    <section className="relative mt-[83px] flex flex-col items-center text-center">
+    <section className="relative mt-[60px] flex flex-col items-center text-center">
       <h1
         className="whitespace-nowrap text-[56px] leading-[72px] text-white"
         style={{ letterSpacing: "-3.36px" }}
@@ -97,12 +100,12 @@ function Hero() {
         </span>
       </h1>
 
-      <p className="mt-5 max-w-[420px] text-base leading-6 text-white/50">
+      <p className="mt-[18px] max-w-[420px] text-base leading-6 text-white/50">
         Float turns voice notes into clean transcripts, summaries, and action
         items - so your ideas never get lost.
       </p>
 
-      <button className="mt-[44px] flex items-center gap-2 rounded-lg bg-white p-4 text-sm font-bold tracking-tight text-[#0d0d0d] shadow-[0_4px_12px_rgba(0,0,0,0.75)] transition hover:bg-white/95">
+      <button className="mt-[36px] flex items-center gap-2 rounded-lg bg-white px-4 py-3.5 text-sm font-bold tracking-tight text-[#0d0d0d] shadow-[0_4px_12px_rgba(0,0,0,0.75)] transition hover:bg-white/95">
         <Image src="/figma/appstore.svg" alt="" width={20} height={20} />
         Get on App Store
         <ArrowRight className="h-3 w-3" strokeWidth={2.5} />
@@ -113,7 +116,7 @@ function Hero() {
 
 function ScreenMockup() {
   return (
-    <div className="relative mx-auto mt-[52px] h-[555px] w-[980px] rounded-[32px] border border-white/10 bg-white/[0.02] shadow-[0_4px_128px_rgba(0,0,0,0.75)]">
+    <div className="relative mx-auto mt-[40px] h-[555px] w-[980px] rounded-[32px] border border-white/10 bg-white/[0.02] shadow-[0_4px_128px_rgba(0,0,0,0.75)]">
       <div className="pointer-events-none absolute inset-2 rounded-[24px] border border-white/15 shadow-[0_4px_32px_rgba(0,0,0,0.75)]" />
 
       <StickerPeel initialPosition={{ x: 24, y: 24 }}>
@@ -207,22 +210,46 @@ function NoteCardHome() {
   );
 }
 
+function TravelCheckbox({
+  checked,
+  onToggle,
+}: {
+  checked: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onPointerDown={(e) => {
+        e.stopPropagation();
+        onToggle();
+      }}
+      className={`flex h-4 w-4 cursor-pointer items-center justify-center rounded transition ${
+        checked
+          ? "bg-white/85"
+          : "border border-white/35 hover:border-white/60"
+      }`}
+      aria-pressed={checked}
+    >
+      {checked && <Check className="h-3 w-3 text-[#0d0d0d]" strokeWidth={3} />}
+    </button>
+  );
+}
+
 function NoteCardTravel() {
+  const [checked, setChecked] = useState<Record<string, boolean>>({
+    passports: false,
+    transfer: true,
+    maps: false,
+  });
+  const toggle = (key: string) =>
+    setChecked((s) => ({ ...s, [key]: !s[key] }));
+
   return (
     <div className="relative h-[320px] w-[258px] overflow-hidden rounded-xl">
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('/figma/lisbon.png')",
-          filter: "brightness(1.00) contrast(1.05)",
-        }}
-      />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-40 mix-blend-overlay"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
-        }}
+        style={{ backgroundImage: "url('/figma/lisbon.png')" }}
       />
       <div className="absolute inset-0 p-4">
         <div className="flex items-center justify-between">
@@ -240,23 +267,21 @@ function NoteCardTravel() {
         </p>
         <ul className="mt-[18px] space-y-3.5">
           <li className="flex items-center gap-2 text-xs font-medium text-white">
-            <span className="h-4 w-4 rounded border border-white/35" />
+            <TravelCheckbox checked={checked.passports} onToggle={() => toggle("passports")} />
             Check passports
           </li>
           <li className="flex items-center gap-2 text-xs font-medium text-white">
-            <span className="flex h-4 w-4 items-center justify-center rounded bg-white/85">
-              <Check className="h-3 w-3 text-[#0d0d0d]" strokeWidth={3} />
-            </span>
+            <TravelCheckbox checked={checked.transfer} onToggle={() => toggle("transfer")} />
             Book airport transfer
           </li>
-          <li className="flex items-center justify-between text-xs font-medium text-white">
-            <span className="flex items-center gap-2">
-              <span className="h-4 w-4 rounded border border-white/35" />
+          <li className="flex items-center gap-2 text-xs font-medium text-white">
+            <TravelCheckbox checked={checked.maps} onToggle={() => toggle("maps")} />
+            <span className="flex items-center gap-1">
               Download offline maps
-            </span>
-            <span className="flex items-center gap-0.5 rounded-full bg-white/15 px-2 py-1 text-[8px] backdrop-blur">
-              Maps
-              <ArrowUpRight className="h-2.5 w-2.5" strokeWidth={3} />
+              <span className="flex items-center gap-0.5 rounded-full bg-white/15 px-1.5 py-0.5 text-[8px] backdrop-blur">
+                Maps
+                <ArrowUpRight className="h-2.5 w-2.5" strokeWidth={3} />
+              </span>
             </span>
           </li>
         </ul>
@@ -269,21 +294,9 @@ function NoteCardPersonal() {
   return (
     <div className="relative h-[217px] w-[220px] overflow-hidden rounded-xl">
       <div
-        className="absolute inset-0 bg-cover"
-        style={{
-          backgroundImage: "url('/figma/person.png')",
-          backgroundPosition: "center 30%",
-          filter: "brightness(0.4) contrast(1.05) saturate(0.85)",
-        }}
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/figma/person.png')" }}
       />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-45 mix-blend-overlay"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
-        }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
       <div className="absolute inset-0 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1 text-[10px] font-semibold text-white">
@@ -309,7 +322,10 @@ function NoteCardPersonal() {
 
 function RecordingBar() {
   return (
-    <div className="absolute left-1/2 top-[341px] flex -translate-x-1/2 items-center gap-4 rounded-xl border border-white/10 bg-white/[0.08] py-2 pl-3.5 pr-2 shadow-[0_8px_48px_rgba(0,0,0,0.65)] backdrop-blur">
+    <div
+      style={{ zIndex: 99999 }}
+      className="absolute left-1/2 top-[341px] flex -translate-x-1/2 items-center gap-4 rounded-xl border border-white/10 bg-white/[0.08] py-2 pl-3.5 pr-2 shadow-[0_8px_48px_rgba(0,0,0,0.65)] backdrop-blur"
+    >
       <span className="text-xs text-white/75">Let&apos;s record a note!</span>
       <div className="flex items-center gap-[3px]">
         <Key label="command" symbol="⌘" wide />

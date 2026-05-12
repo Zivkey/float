@@ -3,9 +3,16 @@
 import { useRef, useEffect, ReactNode } from "react";
 import { gsap } from "gsap";
 import { Draggable } from "gsap/Draggable";
+import { ensureReady, loadPatch, type Patch } from "@web-kits/audio";
 import "./StickerPeel.css";
 
 gsap.registerPlugin(Draggable);
+
+let patchPromise: Promise<Patch> | null = null;
+function getPatch() {
+  if (!patchPromise) patchPromise = loadPatch("/patches/mechanical.json");
+  return patchPromise;
+}
 
 type StickerPeelProps = {
   children: ReactNode;
@@ -36,9 +43,18 @@ export default function StickerPeel({
       type: "x,y",
       bounds: boundsEl,
       inertia: false,
+      zIndexBoost: false,
+      onPress() {
+        ensureReady().then(() =>
+          getPatch().then((p) => p.play("page-exit", { volume: 5 }))
+        );
+      },
       onDrag(this: Draggable) {
         const rot = gsap.utils.clamp(-14, 14, this.deltaX * 0.5);
         gsap.to(target, { rotation: rot, duration: 0.15, ease: "power1.out" });
+      },
+      onRelease() {
+        getPatch().then((p) => p.play("page-exit", { volume: 5 }));
       },
       onDragEnd() {
         gsap.to(target, {
