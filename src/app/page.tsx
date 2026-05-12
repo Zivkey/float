@@ -105,10 +105,13 @@ function Hero() {
         items - so your ideas never get lost.
       </p>
 
-      <button className="mt-[36px] flex items-center gap-2 rounded-lg bg-white px-4 py-3.5 text-sm font-bold tracking-tight text-[#0d0d0d] shadow-[0_4px_12px_rgba(0,0,0,0.75)] transition hover:bg-white/95">
+      <button className="group mt-[36px] flex items-center gap-2 rounded-lg bg-white px-4 py-3.5 text-sm font-bold tracking-tight text-[#0d0d0d] shadow-[0_4px_12px_rgba(0,0,0,0.75)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(255,255,255,0.18),0_4px_12px_rgba(0,0,0,0.75)]">
         <Image src="/figma/appstore.svg" alt="" width={20} height={20} />
         Get on App Store
-        <ArrowRight className="h-3 w-3" strokeWidth={2.5} />
+        <ArrowRight
+          className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5"
+          strokeWidth={2.5}
+        />
       </button>
     </section>
   );

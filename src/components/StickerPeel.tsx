@@ -46,7 +46,7 @@ export default function StickerPeel({
       zIndexBoost: false,
       onPress() {
         ensureReady().then(() =>
-          getPatch().then((p) => p.play("page-exit", { volume: 5 }))
+          getPatch().then((p) => p.play("page-exit", { volume: 3 }))
         );
       },
       onDrag(this: Draggable) {
@@ -54,7 +54,7 @@ export default function StickerPeel({
         gsap.to(target, { rotation: rot, duration: 0.15, ease: "power1.out" });
       },
       onRelease() {
-        getPatch().then((p) => p.play("page-exit", { volume: 5 }));
+        getPatch().then((p) => p.play("page-exit", { volume: 3 }));
       },
       onDragEnd() {
         gsap.to(target, {
