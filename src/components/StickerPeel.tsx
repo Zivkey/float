@@ -14,6 +14,12 @@ function getPatch() {
   return patchPromise;
 }
 
+let topStickerZ = 1;
+function bringToFront(el: HTMLElement) {
+  topStickerZ += 1;
+  el.style.zIndex = String(topStickerZ);
+}
+
 type StickerPeelProps = {
   children: ReactNode;
   initialPosition?: { x: number; y: number };
@@ -45,6 +51,7 @@ export default function StickerPeel({
       inertia: false,
       zIndexBoost: false,
       onPress() {
+        bringToFront(target);
         ensureReady().then(() =>
           getPatch().then((p) => p.play("page-exit", { volume: 3 }))
         );

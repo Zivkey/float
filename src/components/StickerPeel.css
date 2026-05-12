@@ -1,6 +1,7 @@
 .sticker-peel {
   position: absolute;
   cursor: grab;
+  z-index: 1;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.45));
