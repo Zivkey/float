@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   ChevronDown,
@@ -59,16 +59,17 @@ export default function Home() {
 
 function Navbar() {
   return (
-    <nav className="relative mx-auto mt-7 flex h-[72px] w-[calc(100%-256px)] items-center justify-between rounded-xl border border-white/10 px-6">
+    <nav className="relative mx-auto mt-5 flex h-[64px] w-[calc(100%-32px)] items-center justify-between rounded-xl border border-white/10 px-4 sm:mt-7 sm:h-[72px] sm:w-[calc(100%-64px)] sm:px-6 lg:w-[calc(100%-256px)]">
       <Image
         src="/figma/logo.svg"
         alt="float."
         width={92}
         height={32}
         priority
+        className="h-7 w-auto sm:h-8"
       />
 
-      <ul className="absolute left-1/2 flex -translate-x-1/2 items-center gap-10 text-sm tracking-tight text-white/50">
+      <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-10 text-sm tracking-tight text-white/50 lg:flex">
         <li className="flex cursor-pointer items-center gap-1 hover:text-white/80">
           Product <ChevronDown className="h-3.5 w-3.5" />
         </li>
@@ -79,8 +80,8 @@ function Navbar() {
         </li>
       </ul>
 
-      <button className="flex items-center gap-2 rounded-lg bg-white/10 px-3.5 py-2.5 text-sm font-bold tracking-tight text-white shadow-[0_4px_16px_rgba(0,0,0,0.15)] transition hover:bg-white/15">
-        <Image src="/figma/appstore.svg" alt="" width={20} height={20} />
+      <button className="flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-2 text-xs font-bold tracking-tight text-white shadow-[0_4px_16px_rgba(0,0,0,0.15)] transition hover:bg-white/15 sm:gap-2 sm:px-3.5 sm:py-2.5 sm:text-sm">
+        <Image src="/figma/appstore.svg" alt="" width={20} height={20} className="h-4 w-4 sm:h-5 sm:w-5" />
         Get on App Store
       </button>
     </nav>
@@ -89,26 +90,26 @@ function Navbar() {
 
 function Hero() {
   return (
-    <section className="relative mt-[60px] flex flex-col items-center text-center">
+    <section className="relative mt-10 flex flex-col items-center px-4 text-center sm:mt-12 lg:mt-[60px]">
       <h1
-        className="whitespace-nowrap text-[56px] leading-[72px] text-white"
-        style={{ letterSpacing: "-3.36px" }}
+        className="text-balance text-[32px] leading-[1.15] text-white sm:text-[42px] md:text-[48px] lg:whitespace-nowrap lg:text-[56px] lg:leading-[72px]"
+        style={{ letterSpacing: "-0.06em" }}
       >
         Your thoughts,{" "}
         <span
-          className="font-serif text-[64px] italic font-light"
-          style={{ letterSpacing: "-3.84px" }}
+          className="font-serif italic font-light"
+          style={{ letterSpacing: "-0.06em" }}
         >
           captured beautifully.
         </span>
       </h1>
 
-      <p className="mt-[18px] max-w-[420px] text-base leading-6 text-white/50">
+      <p className="mt-4 max-w-[420px] text-sm leading-6 text-white/50 sm:text-base lg:mt-[18px]">
         Float turns voice notes into clean transcripts, summaries, and action
         items - so your ideas never get lost.
       </p>
 
-      <button className="group mt-[36px] flex items-center gap-2 rounded-lg bg-white px-4 py-3.5 text-sm font-bold tracking-tight text-[#0d0d0d] shadow-[0_4px_12px_rgba(0,0,0,0.75)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(255,255,255,0.18),0_4px_12px_rgba(0,0,0,0.75)]">
+      <button className="group mt-7 flex items-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-bold tracking-tight text-[#0d0d0d] shadow-[0_4px_12px_rgba(0,0,0,0.75)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(255,255,255,0.18),0_4px_12px_rgba(0,0,0,0.75)] sm:py-3.5 lg:mt-[36px]">
         <Image src="/figma/appstore.svg" alt="" width={20} height={20} />
         Get on App Store
         <ArrowRight
@@ -120,27 +121,117 @@ function Hero() {
   );
 }
 
-function ScreenMockup() {
-  return (
-    <div className="relative mx-auto mt-[40px] h-[555px] w-[980px] rounded-[32px] border border-white/10 bg-white/[0.02] shadow-[0_4px_128px_rgba(0,0,0,0.75)]">
-      <div className="pointer-events-none absolute inset-2 rounded-[24px] border border-white/15 shadow-[0_4px_32px_rgba(0,0,0,0.75)]" />
+type Layout = "desktop" | "mobile";
 
-      <StickerPeel initialPosition={{ x: 24, y: 24 }}>
-        <NoteCardWork />
-      </StickerPeel>
-      <StickerPeel initialPosition={{ x: 338, y: 72 }}>
-        <NoteCardShopping />
-      </StickerPeel>
-      <StickerPeel initialPosition={{ x: 698, y: 24 }}>
-        <NoteCardHome />
-      </StickerPeel>
-      <StickerPeel initialPosition={{ x: 658, y: 201 }}>
-        <NoteCardTravel />
-      </StickerPeel>
-      <StickerPeel initialPosition={{ x: 46, y: 244 }}>
-        <NoteCardPersonal />
-      </StickerPeel>
-      <RecordingBar />
+const LAYOUTS: Record<
+  Layout,
+  {
+    w: number;
+    h: number;
+    edge: number;
+    cardScale: number;
+    positions: {
+      work: { x: number; y: number };
+      shopping: { x: number; y: number };
+      home: { x: number; y: number };
+      travel: { x: number; y: number };
+      personal: { x: number; y: number };
+      record: { top: number };
+    };
+  }
+> = {
+  desktop: {
+    w: 980,
+    h: 555,
+    edge: 32,
+    cardScale: 1,
+    positions: {
+      work: { x: 24, y: 24 },
+      shopping: { x: 338, y: 72 },
+      home: { x: 698, y: 24 },
+      travel: { x: 658, y: 201 },
+      personal: { x: 46, y: 244 },
+      record: { top: 341 },
+    },
+  },
+  mobile: {
+    w: 360,
+    h: 680,
+    edge: 16,
+    cardScale: 0.6,
+    positions: {
+      // Card sizes after scale 0.6:
+      // Work: 217x99, Shopping: 133x138, Home: 155x77,
+      // Travel: 155x192, Personal: 132x130
+      work: { x: 20, y: 20 },
+      home: { x: 190, y: 40 },
+      shopping: { x: 16, y: 160 },
+      travel: { x: 184, y: 140 },
+      personal: { x: 20, y: 350 },
+      record: { top: 540 },
+    },
+  },
+};
+
+function ScreenMockup() {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [layout, setLayout] = useState<Layout>("desktop");
+
+  useEffect(() => {
+    const update = () => {
+      const isMobile = window.innerWidth < 768;
+      const next: Layout = isMobile ? "mobile" : "desktop";
+      setLayout(next);
+      const { w, edge } = LAYOUTS[next];
+      const el = wrapperRef.current;
+      if (!el) return;
+      const available = Math.min(window.innerWidth - edge, w);
+      el.style.setProperty("--mockup-scale", String(available / w));
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const cfg = LAYOUTS[layout];
+
+  return (
+    <div
+      ref={wrapperRef}
+      className="mockup-responsive mx-auto mt-8 lg:mt-[40px]"
+      style={
+        {
+          "--mockup-w": `${cfg.w}px`,
+          "--mockup-h": `${cfg.h}px`,
+        } as React.CSSProperties
+      }
+    >
+      <div
+        className="mockup-inner relative rounded-[32px] border border-white/10 bg-white/[0.02] shadow-[0_4px_128px_rgba(0,0,0,0.75)]"
+        style={{ width: cfg.w, height: cfg.h }}
+      >
+        <div className="pointer-events-none absolute inset-2 rounded-[24px] border border-white/15 shadow-[0_4px_32px_rgba(0,0,0,0.75)]" />
+
+        <StickerPeel initialPosition={cfg.positions.work} scale={cfg.cardScale}>
+          <NoteCardWork />
+        </StickerPeel>
+        <StickerPeel initialPosition={cfg.positions.shopping} scale={cfg.cardScale}>
+          <NoteCardShopping />
+        </StickerPeel>
+        <StickerPeel initialPosition={cfg.positions.home} scale={cfg.cardScale}>
+          <NoteCardHome />
+        </StickerPeel>
+        <StickerPeel initialPosition={cfg.positions.travel} scale={cfg.cardScale}>
+          <NoteCardTravel />
+        </StickerPeel>
+        <StickerPeel initialPosition={cfg.positions.personal} scale={cfg.cardScale}>
+          <NoteCardPersonal />
+        </StickerPeel>
+        <RecordingBar
+          top={cfg.positions.record.top}
+          scale={layout === "mobile" ? 1.2 : 1}
+        />
+      </div>
     </div>
   );
 }
@@ -326,13 +417,26 @@ function NoteCardPersonal() {
   );
 }
 
-function RecordingBar() {
+function RecordingBar({
+  top = 341,
+  scale = 1,
+}: {
+  top?: number;
+  scale?: number;
+}) {
   return (
     <div
-      style={{ zIndex: 99999 }}
-      className="absolute left-1/2 top-[341px] flex -translate-x-1/2 items-center gap-4 rounded-xl border border-white/10 bg-white/[0.08] py-2 pl-3.5 pr-2 shadow-[0_8px_48px_rgba(0,0,0,0.65)] backdrop-blur"
+      style={{
+        zIndex: 99999,
+        top,
+        transform: `translateX(-50%) scale(${scale})`,
+        transformOrigin: "top center",
+      }}
+      className="absolute left-1/2 flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.08] py-2 pl-3.5 pr-2 shadow-[0_8px_48px_rgba(0,0,0,0.65)] backdrop-blur"
     >
-      <span className="text-xs text-white/75">Let&apos;s record a note!</span>
+      <span className="whitespace-nowrap text-xs text-white/75">
+        Let&apos;s record a note!
+      </span>
       <div className="flex items-center gap-[3px]">
         <Key label="command" symbol="⌘" wide />
         <Key label="option" symbol="⌥" />

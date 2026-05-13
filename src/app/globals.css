@@ -18,3 +18,16 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
+
+.mockup-responsive {
+  --mockup-scale: 1;
+  --mockup-w: 980px;
+  --mockup-h: 555px;
+  width: calc(var(--mockup-w) * var(--mockup-scale));
+  height: calc(var(--mockup-h) * var(--mockup-scale));
+}
+
+.mockup-responsive .mockup-inner {
+  transform: scale(var(--mockup-scale));
+  transform-origin: top left;
+}

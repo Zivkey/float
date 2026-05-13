@@ -23,12 +23,14 @@ function bringToFront(el: HTMLElement) {
 type StickerPeelProps = {
   children: ReactNode;
   initialPosition?: { x: number; y: number };
+  scale?: number;
   className?: string;
 };
 
 export default function StickerPeel({
   children,
   initialPosition = { x: 0, y: 0 },
+  scale = 1,
   className = "",
 }: StickerPeelProps) {
   const dragTargetRef = useRef<HTMLDivElement>(null);
@@ -37,8 +39,13 @@ export default function StickerPeel({
   useEffect(() => {
     const target = dragTargetRef.current;
     if (!target) return;
-    gsap.set(target, { x: initialPosition.x, y: initialPosition.y });
-  }, [initialPosition.x, initialPosition.y]);
+    gsap.set(target, {
+      x: initialPosition.x,
+      y: initialPosition.y,
+      scale,
+      transformOrigin: "top left",
+    });
+  }, [initialPosition.x, initialPosition.y, scale]);
 
   useEffect(() => {
     const target = dragTargetRef.current;
